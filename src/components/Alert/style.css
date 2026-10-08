@@ -1,0 +1,75 @@
+.vk-alert {
+  /* 基础变量定义 */
+  --vk-alert-padding: 8px 16px;
+  --vk-alert-border-radius: var(--vk-border-radius-base);
+  --vk-alert-bg-color: var(--vk-fill-color-blank);
+  --vk-alert-text-color: var(--vk-text-color-primary);
+  --vk-alert-border-color: transparent;
+
+  display: flex;
+  align-items: center;
+  padding: var(--vk-alert-padding);
+  border-radius: var(--vk-alert-border-radius);
+  box-sizing: border-box;
+  position: relative;
+  background-color: var(--vk-alert-bg-color);
+  color: var(--vk-alert-text-color);
+  border: var(--vk-border-width) solid var(--vk-alert-border-color);
+  transition: var(--vk-transition-duration);
+  margin-bottom: 20px;
+}
+
+.vk-alert--content {
+  flex: 1; /* 撑开中间区域 */
+  font-size: var(--vk-font-size-base);
+  line-height: 1.5;
+  /* 即使没有文字也占位，保证 X 号永远靠右 */
+  min-height: var(--vk-font-size-base);
+}
+
+/* 针对 Icon 的间距控制 */
+.vk-alert .vk-icon {
+  cursor: pointer;
+  margin-left: 12px; /* 参考 Button 的间距 */
+  font-size: var(--vk-font-size-medium);
+  transition: opacity var(--vk-transition-duration-fast);
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+/* --- 循环生成主题颜色 (参考 Button 的逻辑) --- */
+@each $val in primary, success, warning, info, danger {
+  /* Effect: Light (对应 Button 的 is-plain 风格) */
+  .vk-alert--$(val).vk-alert--light {
+    --vk-alert-bg-color: var(--vk-color-$(val)-light-9);
+    --vk-alert-text-color: var(--vk-color-$(val));
+    --vk-alert-border-color: var(--vk-color-$(val)-light-8);
+  }
+
+  /* Effect: Dark (对应 Button 的深色风格) */
+  .vk-alert--$(val).vk-alert--dark {
+    --vk-alert-bg-color: var(--vk-color-$(val));
+    --vk-alert-text-color: var(--vk-color-white);
+    --vk-alert-border-color: var(--vk-color-$(val));
+  }
+}
+
+/* 进入动画和离开动画的生效阶段 */
+.vk-alert-fade-enter-active,
+.vk-alert-fade-leave-active {
+  /* 使用你定义的变量 */
+  transition: opacity var(--vk-transition-duration);
+}
+
+/* 进入前状态 和 离开后状态 */
+.vk-alert-fade-enter-from,
+.vk-alert-fade-leave-to {
+  opacity: 0;
+}
+
+/* 进场后的最终状态 和 离场前的初始状态 (可选，默认为 1) */
+.vk-alert-fade-enter-to,
+.vk-alert-fade-leave-from {
+  opacity: 1;
+}

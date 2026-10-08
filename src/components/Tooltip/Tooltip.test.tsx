@@ -1,0 +1,37 @@
+import { describe, test, expect, vi, beforeEach } from "vitest";
+import { mount } from  "@vue/test-utils";
+import Tooltip from "./Tooltip.vue";
+
+const onVisibleChange = vi.fn();
+describe('Tooltip.vue', () => {
+  beforeEach(()=>{
+    vi.useFakeTimers()
+  })
+  test('basic tooltip', async ()=>{
+    const wrapper = mount(()=>
+      <div>
+        <div id="outside"></div>
+        <Tooltip content="hello tooltip" trigger="click" onVisible-change={onVisibleChange}>
+          <button id='trigger'>Trigger</button>
+        </Tooltip>
+      </div>
+    ,{
+      attachTo:document.body
+    })
+    // 静态测试
+    const triggerArea = wrapper.find("#trigger");
+    expect(triggerArea.exists()).toBeTruthy();
+    expect(wrapper.find('.vk-tooltip__popper').exists()).toBeFalsy();
+    // 测试点击行为
+    triggerArea.trigger('click');
+    await vi.runAllTimers();
+    expect(wrapper.find('.vk-tooltip__popper').exists()).toBeTruthy();
+    expect(wrapper.get('.vk-tooltip__popper').text()).toBe('hello tooltip');
+    expect(onVisibleChange).toHaveBeenCalledWith(true)
+    // 点击外侧
+    wrapper.find('#outside').trigger('click');
+    await vi.runAllTimers();
+    expect(wrapper.find('.vk-tooltip__popper').exists()).toBeFalsy();
+    expect(onVisibleChange).toHaveBeenCalledWith(false)
+  })
+})
